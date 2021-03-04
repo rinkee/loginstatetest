@@ -31,12 +31,14 @@ dependencies:
 
   #firebase
   firebase_core: ^0.7.0
-  firebase_auth: ^0.20.1
   cloud_firestore: ^0.16.0+1
-  google_sign_in: ^4.5.9
+  firebase_auth: 0.20.1
+  google_sign_in: ^4.5.1
 
   #state management
   get: ^3.25.6
+  provider: ^4.3.2+2
+  rxdart: ^0.20.0
 
 dev_dependencies:
   flutter_test:
