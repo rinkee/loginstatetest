@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:googlelogin_firebase/pages/CreateAccount.dart';
 import 'package:googlelogin_firebase/provider/SignInProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:googlelogin_firebase/auth.dart';
@@ -36,6 +37,8 @@ class LoginPage extends StatelessWidget {
               FlatButton(
                 onPressed: () {
                   provider.signInWithGoogle();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CreateAccount()));
                 },
                 child: Text('Google Login'),
               ),

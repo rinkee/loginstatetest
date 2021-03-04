@@ -10,6 +10,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'dart:convert';
 // import 'package:uuid/uuid.dart';
 
+import 'package:googlelogin_firebase/pages/CreateAccount.dart';
+
 class SignInProvider extends ChangeNotifier {
   //구글
   final googleSignIn = GoogleSignIn();
@@ -43,8 +45,6 @@ class SignInProvider extends ChangeNotifier {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
-
-      addUserInFirestore();
       isSigningIn = false;
     }
   }
@@ -54,31 +54,6 @@ class SignInProvider extends ChangeNotifier {
     FirebaseAuth.instance.signOut();
   }
 
-  Future<void> addUserInFirestore() async {
-    final gCurrentUser = googleSignIn.currentUser;
-    final doc1 =
-        FirebaseFirestore.instance.collection('user').doc(gCurrentUser.id);
-    DocumentSnapshot doc = await doc1.get();
-    // .get();
-    // Create a CollectionReference called users that references the firestore collection
-    CollectionReference users = FirebaseFirestore.instance.collection('user');
-    if (!doc.exists) {
-      doc1.set({
-        'full_name': gCurrentUser.displayName, // John Doe
-        'photoURL': gCurrentUser.photoUrl, // Stokes and Sons
-        'email': gCurrentUser.email // 42
-      });
-    }
-    // Call the user's CollectionReference to add a new user
-    // return users
-    //     .add({
-    //       'full_name': user.displayName, // John Doe
-    //       'photoURL': user.photoURL, // Stokes and Sons
-    //       'email': user.email // 42
-    //     })
-    //     .then((value) => print("User Added"))
-    //     .catchError((error) => print("Failed to add user: $error"));
-  }
 // Kakao Web Login
 
   // Future<UserCredential> signInWithKaKao() async {
