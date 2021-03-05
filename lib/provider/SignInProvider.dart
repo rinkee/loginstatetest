@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 // import 'package:flutter_web_auth/flutter_web_auth.dart';
 // 구글
 import 'package:google_sign_in/google_sign_in.dart';
@@ -11,14 +12,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:uuid/uuid.dart';
 
 import 'package:googlelogin_firebase/pages/CreateAccount.dart';
+import 'package:googlelogin_firebase/pages/LoginPage.dart';
 
 class SignInProvider extends ChangeNotifier {
   //구글
   final googleSignIn = GoogleSignIn();
   bool _isSigningIn;
+  bool _haveCreated;
 
   SignInProvider() {
     _isSigningIn = false;
+    _haveCreated = false;
   }
 
   bool get isSigningIn => _isSigningIn;
@@ -28,8 +32,16 @@ class SignInProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get haveCreated => _haveCreated;
+
+  set haveCreated(bool haveCreated) {
+    _haveCreated = haveCreated;
+    notifyListeners();
+  }
+
   Future signInWithGoogle() async {
     isSigningIn = true;
+
     // 인증 흐름 트리거
     final gUser = await googleSignIn.signIn();
     if (gUser == null) {
@@ -45,15 +57,47 @@ class SignInProvider extends ChangeNotifier {
       );
 
       await FirebaseAuth.instance.signInWithCredential(credential);
+
+      final user = FirebaseAuth.instance.currentUser;
+      final doc1 = FirebaseFirestore.instance.collection('user').doc(user.uid);
+      DocumentSnapshot doc = await doc1.get();
+      if (!doc.exists) {
+        haveCreated = true;
+      } else {
+        haveCreated = false;
+      }
       isSigningIn = false;
+      return;
     }
   }
 
   void logout() async {
     await googleSignIn.disconnect();
     FirebaseAuth.instance.signOut();
+    Get.offAll(LoginPage());
   }
 
+  // Future<void> addUserInFirestore() async {
+  //   final gCurrentUser = GoogleSignIn().currentUser;
+  //   final user = FirebaseAuth.instance.currentUser;
+  //   final doc1 = FirebaseFirestore.instance.collection('user').doc(user.uid);
+  //   DocumentSnapshot doc = await doc1.get();
+  //   // .get();
+  //   // Create a CollectionReference called users that references the firestore collection
+  //   CollectionReference users = FirebaseFirestore.instance.collection('user');
+  //   if (!doc.exists) {
+  //     _hasCreate = true;
+  //     doc1
+  //         .set({
+  //           'full_name': user.displayName, // John Doe
+  //           'nick_name:': nameController.text,
+  //           'photoURL': user.photoURL, // Stokes and Sons
+  //           'email': user.email // 42
+  //         })
+  //         .then((value) => print("User Added"))
+  //         .catchError((error) => print("Failed to add user: $error"));
+  //   }
+  // }
 // Kakao Web Login
 
   // Future<UserCredential> signInWithKaKao() async {

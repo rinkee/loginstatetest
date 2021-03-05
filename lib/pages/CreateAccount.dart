@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:googlelogin_firebase/App.dart';
 
 import '../main.dart';
 import 'HomePage.dart';
@@ -43,8 +45,9 @@ class CreateAccount extends StatelessWidget {
                   final gCurrentUser = GoogleSignIn().currentUser;
                   final user = FirebaseAuth.instance.currentUser;
                   addUserInFirestore();
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => MyApp()));
+                  // Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => MyApp()));
+                  Get.offAll(App());
                 },
                 child: Text('Submit'),
               ),
@@ -68,7 +71,7 @@ Future<void> addUserInFirestore() async {
     doc1
         .set({
           'full_name': user.displayName, // John Doe
-          'nick_name:': nameController.text,
+          'nick_name': nameController.text,
           'photoURL': user.photoURL, // Stokes and Sons
           'email': user.email // 42
         })
