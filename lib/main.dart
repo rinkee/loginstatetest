@@ -6,6 +6,7 @@ import 'package:googlelogin_firebase/pages/CreateAccount.dart';
 import 'package:googlelogin_firebase/pages/HomePage.dart';
 import 'package:googlelogin_firebase/pages/LoginPage.dart';
 import 'package:get/get.dart';
+import 'package:googlelogin_firebase/pages/Mockup_HomePage.dart';
 import 'package:googlelogin_firebase/pages/TestPage.dart';
 import 'App.dart';
 import 'package:googlelogin_firebase/controller/my_page_controller.dart';
@@ -34,10 +35,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int currentPage = 0;
-
-  List<Widget> pageList = [HomePage(), MyPage()];
-
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

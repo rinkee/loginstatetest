@@ -70,10 +70,11 @@ Future<void> addUserInFirestore() async {
   if (!doc.exists) {
     doc1
         .set({
-          'full_name': user.displayName, // John Doe
+          'display_name': user.displayName,
           'nick_name': nameController.text,
-          'photoURL': user.photoURL, // Stokes and Sons
-          'email': user.email // 42
+          'photoURL': user.photoURL,
+          'email': user.email,
+          'create_data': _date
         })
         .then((value) => print("User Added"))
         .catchError((error) => print("Failed to add user: $error"));

@@ -1,22 +1,18 @@
-import 'dart:typed_data';
-
+import 'package:flutter/material.dart';
+import 'dart:async';
+//firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+//state control
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googlelogin_firebase/App.dart';
 import 'package:googlelogin_firebase/controller/my_page_controller.dart';
-import 'package:googlelogin_firebase/main.dart';
-import 'package:googlelogin_firebase/pages/HomePage.dart';
-
-import 'dart:async';
-import 'dart:io';
+// image_picker
 import 'package:multi_image_picker/multi_image_picker.dart';
 
 // TextEditingController contentController = TextEditingController();
 final _contentText = TextEditingController();
 final _formKey = GlobalKey<FormState>();
+DateTime _date = DateTime.now();
 bool _validate = false;
 
 class CreatePost extends StatefulWidget {
@@ -132,7 +128,6 @@ class _CreatePostState extends State<CreatePost> {
                     //     SnackBar(content: Text('Processing Data')));
                     Get.offAll(MyPageController(),
                         transition: Transition.rightToLeft);
-                    _contentText.clear();
                   }
 
                   // Navigator.push(
@@ -202,12 +197,11 @@ Widget buildTextField() {
 }
 
 Future<void> addPostInFirestore() async {
-  final gCurrentUser = GoogleSignIn().currentUser;
   final user = FirebaseAuth.instance.currentUser;
   final doc1 = FirebaseFirestore.instance
-      .collection('post')
+      .collection('user')
       .doc(user.uid)
-      .collection('uploadPost')
+      .collection('post')
       .doc();
   DocumentSnapshot doc = await doc1.get();
   // .get();
@@ -216,7 +210,10 @@ Future<void> addPostInFirestore() async {
   doc1
       .set({
         'content': _contentText.text,
+        'timestamp': _date,
+        'ownerId': user.uid,
       })
-      .then((value) => print("User Added"))
+      .then((value) => print("post Added"))
       .catchError((error) => print("Failed to add user: $error"));
+  _contentText.clear();
 }

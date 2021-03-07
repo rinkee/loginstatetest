@@ -30,9 +30,9 @@ class HomePage extends StatelessWidget {
                 child: Text('logout'),
               ),
               FlatButton(
-                onPressed: () {
-                  Get.to(TestPage());
-                },
+                // onPressed: () {
+                //   Get.to(TestPage());
+                // },
                 child: Text('업로드 이미지 테스트'),
               ),
             ],
