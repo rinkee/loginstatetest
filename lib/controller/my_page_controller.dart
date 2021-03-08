@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:googlelogin_firebase/pages/HomePage.dart';
 import 'package:googlelogin_firebase/pages/Mockup_HomePage.dart';
 import 'package:googlelogin_firebase/pages/MyPage.dart';
+import 'package:googlelogin_firebase/pages/TestPage.dart';
+import 'package:googlelogin_firebase/models/user.dart';
+
+User currentUser;
 
 class MyPageController extends StatefulWidget {
   @override
@@ -14,8 +18,8 @@ class _MyPageControllerState extends State<MyPageController> {
   List<Widget> pageList = [
     Mockup_HomePage(),
     MyPage(),
-    MyPage(),
-    MyPage(),
+    HomePage(),
+    TestPage(currentUser),
     MyPage()
   ];
 

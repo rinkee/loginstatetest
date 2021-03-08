@@ -40,10 +40,16 @@ dependencies:
   provider: ^4.3.2+2
   rxdart: ^0.20.0
 
+
   # multi_image_picker
   multi_image_picker: ^4.7.15
   image_picker: ^0.6.7+22
   permission_handler: ^5.1.0+2
+  image:
+  cached_network_image:
+  uuid:
+  path_provider:
+  geolocator: ^5.0.0
 
 dev_dependencies:
   flutter_test:
