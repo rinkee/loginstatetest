@@ -1,26 +1,26 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:geolocator/geolocator.dart';
-import 'package:image/image.dart' as ImD;
-import 'package:uuid/uuid.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:googlelogin_firebase/models/user.dart';
+import 'package:googlelogin_firebase/pages/App.dart';
+import 'package:uuid/uuid.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as ImD;
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:googlelogin_firebase/widgets/ProgressWidget.dart';
 
-class TestPage extends StatefulWidget {
-  final gCurrentUser;
-  TestPage(this.gCurrentUser);
+class UploadPage extends StatefulWidget {
+  final User gCurrentUser;
+  UploadPage(this.gCurrentUser);
   @override
-  _TestPageState createState() => _TestPageState();
+  _UploadPageState createState() => _UploadPageState();
 }
 
-class _TestPageState extends State<TestPage>
-    with AutomaticKeepAliveClientMixin<TestPage> {
+class _UploadPageState extends State<UploadPage>
+    with AutomaticKeepAliveClientMixin<UploadPage> {
   final ImagePicker _picker = ImagePicker();
   File imgFile;
   bool uploading = false;
@@ -28,7 +28,6 @@ class _TestPageState extends State<TestPage>
   TextEditingController descTextEditingController = TextEditingController();
   TextEditingController locationTextEditingController = TextEditingController();
 
-  @override
   void dispose() {
     descTextEditingController.dispose();
     locationTextEditingController.dispose();
@@ -38,7 +37,10 @@ class _TestPageState extends State<TestPage>
   pickImageFromGallery() async {
     Navigator.pop(context);
     PickedFile imageFile = await _picker.getImage(
-        source: ImageSource.gallery, maxHeight: 680, maxWidth: 970);
+      source: ImageSource.gallery,
+      maxHeight: 680,
+      maxWidth: 970,
+    );
     setState(() {
       this.imgFile = File(imageFile.path);
     });
@@ -47,7 +49,10 @@ class _TestPageState extends State<TestPage>
   captureImageWithCamera() async {
     Navigator.pop(context);
     PickedFile imageFile = await _picker.getImage(
-        source: ImageSource.camera, maxHeight: 680, maxWidth: 970);
+      source: ImageSource.camera,
+      maxHeight: 680,
+      maxWidth: 970,
+    );
     setState(() {
       this.imgFile = File(imageFile.path);
     });
@@ -59,23 +64,26 @@ class _TestPageState extends State<TestPage>
         builder: (context) {
           return SimpleDialog(
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0)),
-            title: Text(
-              'New Post',
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              borderRadius: BorderRadius.circular(8.0),
             ),
-            children: [
+            title: Text('New Post',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                )),
+            children: <Widget>[
               SimpleDialogOption(
-                child: Text('Capture Image with Camera'),
+                child: Text('Capture Image with Camera',
+                    style: TextStyle(color: Colors.black)),
                 onPressed: captureImageWithCamera,
               ),
               SimpleDialogOption(
-                child: Text('Select Image from Gallery'),
+                child: Text('Select Image from Gallery',
+                    style: TextStyle(color: Colors.black)),
                 onPressed: pickImageFromGallery,
               ),
               SimpleDialogOption(
-                child: Text('Cancle'),
+                child: Text('Cancel', style: TextStyle(color: Colors.grey)),
                 onPressed: () => Navigator.pop(context),
               ),
             ],
@@ -84,29 +92,22 @@ class _TestPageState extends State<TestPage>
   }
 
   displayUploadScreen() {
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.add_photo_alternate_outlined,
-            color: Colors.grey,
-            size: 150,
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 20),
-            child: RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text('사진 선택하기',
-                  style: TextStyle(color: Colors.white, fontSize: 20)),
-              color: Colors.green,
-              onPressed: () => takeImage(context),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('게시물'),
+        centerTitle: false,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => takeImage(context),
           )
         ],
       ),
+      body: SafeArea(
+          child: Column(
+        children: <Widget>[],
+      )),
     );
   }
 
@@ -121,18 +122,18 @@ class _TestPageState extends State<TestPage>
   }
 
   getUserCurrentLocation() async {
-    print('here1');
+    print('여기1');
     Position position = await Geolocator()
         .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    print('here2');
+    print('여기2');
     List<Placemark> placeMarks = await Geolocator()
         .placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark mPlaceMark = placeMarks[0];
-    print('here3');
+    print('여기3');
     String completeAddressInfo =
-        '${mPlaceMark.subThoroughfare} ${mPlaceMark.thoroughfare}, ${mPlaceMark.subLocality} ${mPlaceMark.locality} , ${mPlaceMark.subAdministrativeArea} ${mPlaceMark.administrativeArea} , ${mPlaceMark.postalCode} ${mPlaceMark.country}';
-    String specificAddress = '${mPlaceMark.locality} ,${mPlaceMark.country} ';
-    print('here4');
+        '${mPlaceMark.subThoroughfare} ${mPlaceMark.thoroughfare}, ${mPlaceMark.subLocality} ${mPlaceMark.locality}, ${mPlaceMark.subAdministrativeArea} ${mPlaceMark.administrativeArea}, ${mPlaceMark.postalCode} ${mPlaceMark.country}';
+    String specificAddress = '${mPlaceMark.locality}, ${mPlaceMark.country}';
+    print('여기4');
     locationTextEditingController.text = '${position.latitude}';
     print(
         'locationTextEditingController.text : ${locationTextEditingController.text}');
@@ -141,7 +142,7 @@ class _TestPageState extends State<TestPage>
   compressingPhoto() async {
     // 업로드 전 사진 준비
     final tDirectory = await getTemporaryDirectory(); // path_provider에서 제공
-    final path = tDirectory.path; // 임시 path를 만듦
+    final path = tDirectory.path; // 임시 path를 만들어서
     ImD.Image mImageFile =
         ImD.decodeImage(imgFile.readAsBytesSync()); // image file을 읽어서
     final compressedImageFile = File('$path/img_$postId.jpg')
@@ -158,44 +159,36 @@ class _TestPageState extends State<TestPage>
     });
     await compressingPhoto(); // 업로드 전 사진 준비
     String downloadUrl = await uploadPhoto(imgFile); // 업로드 후 url 저장
-    savePostInfoToFirestore(
+    savePostInfoToFireStore(
         url: downloadUrl,
         location: locationTextEditingController.text,
         desc: descTextEditingController.text); // location은 에러나서 잠시 보류
     clearPostInfo();
   }
 
-  savePostInfoToFirestore({String url, String location, String desc}) {
-    DateTime _date = DateTime.now();
-
-    final user = FirebaseAuth.instance.currentUser;
-    final postdoc = FirebaseFirestore.instance
-        .collection('user')
-        .doc(user.uid)
-        .collection('post')
-        .doc();
-    postdoc
+  savePostInfoToFireStore({String url, String location, String desc}) {
+    usersReference
+        .doc(widget.gCurrentUser.id)
+        .collection('posts')
+        .doc(postId)
         .set({
-          'postId': postId,
-          'ownerId': widget.gCurrentUser.id,
-          'timestamp': _date,
-          'likes': {},
-          'username': widget.gCurrentUser.username,
-          'description': desc,
-          'location': location,
-          'url': url
-        })
-        .then((value) => print("post Added"))
-        .catchError((error) => print("Failed to add user: $error"));
+      'postId': postId,
+      'ownerId': widget.gCurrentUser.id,
+      'timestamp': timestamp,
+      'likes': {},
+      'username': widget.gCurrentUser.username,
+      'description': desc,
+      'location': location,
+      'url': url
+    });
   }
 
   Future<String> uploadPhoto(mImgFile) async {
-    firebase_storage.FirebaseStorage fStorage =
-        firebase_storage.FirebaseStorage.instance;
-    final storageUploadTask = fStorage
-        .ref('post_$postId.jpg')
+    firebase_storage.UploadTask storageUploadTask = storageReference
+        .child('post_$postId.jpg')
         .putFile(mImgFile); // 파일명을 지정해서 Storage에 저장
-    final storageTaskSnapshot = await storageUploadTask; // 저장이 완료되면
+    firebase_storage.TaskSnapshot storageTaskSnapshot =
+        await storageUploadTask; // 저장이 완료되면
     return await storageTaskSnapshot.ref.getDownloadURL(); // 저장된 url값을 return
   }
 
@@ -249,13 +242,13 @@ class _TestPageState extends State<TestPage>
                     width: 250,
                     child: TextField(
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                       controller: descTextEditingController,
                       decoration: InputDecoration(
                         hintText: 'Say something about image',
                         hintStyle: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                         border: InputBorder.none,
                       ),
@@ -263,18 +256,18 @@ class _TestPageState extends State<TestPage>
             Divider(),
             ListTile(
                 leading: Icon(Icons.person_pin_circle,
-                    color: Colors.white, size: 36),
+                    color: Colors.black, size: 36),
                 title: Container(
                     width: 250,
                     child: TextField(
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                       controller: locationTextEditingController,
                       decoration: InputDecoration(
                         hintText: 'Write the location here',
                         hintStyle: TextStyle(
-                          color: Colors.white,
+                          color: Colors.black,
                         ),
                         border: InputBorder.none,
                       ),
@@ -291,7 +284,7 @@ class _TestPageState extends State<TestPage>
                   icon: Icon(Icons.location_on, color: Colors.white),
                   label: Text('Get my Current Location',
                       style: TextStyle(color: Colors.white)),
-                  // onPressed: getUserCurrentLocation,
+                  onPressed: getUserCurrentLocation,
                 ))
           ],
         ));
@@ -302,16 +295,8 @@ class _TestPageState extends State<TestPage>
   @override
   Widget build(BuildContext context) {
     // 카메라 또는 갤러리에서 사진 선택한 후엔 UploadFormScreen으로 보여준다.
-    return imgFile == null ? displayUploadScreen() : displayUploadFormScreen();
+    return Scaffold(
+      body: imgFile == null ? displayUploadScreen() : displayUploadFormScreen(),
+    );
   }
-}
-
-linearProgress() {
-  return Container(
-    alignment: Alignment.center,
-    padding: EdgeInsets.only(top: 12),
-    child: LinearProgressIndicator(
-      valueColor: AlwaysStoppedAnimation(Colors.lightGreenAccent),
-    ),
-  );
 }

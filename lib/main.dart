@@ -1,69 +1,73 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googlelogin_firebase/binding/init_binding.dart';
-import 'package:googlelogin_firebase/pages/CreateAccount.dart';
-import 'package:googlelogin_firebase/pages/HomePage.dart';
-import 'package:googlelogin_firebase/pages/LoginPage.dart';
-import 'package:get/get.dart';
-import 'package:googlelogin_firebase/pages/Mockup_HomePage.dart';
-import 'package:googlelogin_firebase/pages/TestPage.dart';
-import 'App.dart';
-import 'package:googlelogin_firebase/controller/my_page_controller.dart';
-
-// 파이어베이스
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:googlelogin_firebase/pages/MyPage.dart';
-import 'package:googlelogin_firebase/provider/SignInProvider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:googlelogin_firebase/pages/App.dart';
+import 'package:googlelogin_firebase/provider/SigninProvider.dart';
 import 'package:provider/provider.dart';
 
-Future main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (context) => SignInProvider())],
-    child: MyApp(),
-  ));
-  // runApp(MyApp());
+  runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      initialBinding: InitBinding(),
-      initialRoute: '/',
-      getPages: [
-        GetPage(name: '/', page: () => App()),
-        GetPage(name: '/second', page: () => MyPage()),
-      ],
+    return MaterialApp(
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
+        dialogBackgroundColor: Colors.white,
+        primaryColor: Colors.white,
+        cardColor: Colors.black,
+        accentColor: Colors.white,
+      ),
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          final provider = Provider.of<SignInProvider>(context);
+          final provider = Provider.of<SigninProvider>(context);
           if (provider.isSigningIn) {
-            return buildLoading();
+            return buildSignInScreen();
           } else if (!snapshot.hasData) {
-            return LoginPage();
-          } else if (snapshot.hasData && provider.haveCreated) {
-            print(provider.haveCreated);
-            return CreateAccount();
-          } else {
-            return MyPageController();
-            // return App();
-
+            return
           }
-        },
+          return App();
+        }
       ),
     );
   }
+  buildSignInScreen() {
+    final provider = Provider.of<SigninProvider>(context);
+    return Scaffold(
+        body: Container(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'QQAQ',
+                  style: TextStyle(fontSize: 50, fontFamily: 'Signatra'),
+                ),
+                SizedBox(height: 200),
+                GestureDetector(
 
-  Widget buildLoading() => Center(child: CircularProgressIndicator());
+                  onTap: provider.loginUser,
+                  child: Container(
+                    width: 200,
+                    height: 50,
+                    child: Text(
+                      '구글 로그인',
+                      style: TextStyle(fontSize: 25),
+                    ),
+                  ),
+                )
+              ],
+            )));
+  }
 }
+
