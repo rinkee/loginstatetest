@@ -30,11 +30,11 @@ dependencies:
   cupertino_icons: ^1.0.0
 
   #firebase
-  firebase_core: ^0.7.0
-  cloud_firestore: ^0.16.0+1
-  firebase_auth: 0.20.1
+  firebase_core: ^0.5.3
+  cloud_firestore:  ^0.14.4
+  firebase_auth: 0.18.4+1
   google_sign_in: ^4.5.1
-  firebase_storage: ^7.0.0
+  firebase_storage: ^4.0.1
   #state management
   get: ^3.25.6
   provider: ^4.3.2+2

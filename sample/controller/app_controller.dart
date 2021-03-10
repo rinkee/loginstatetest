@@ -1,12 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-enum RouteName {
-  TimeLinePage,
-  SearchPage,
-  UploadPage,
-  NotificationsPage,
-  ProfilePage
-}
+enum RouteName { Home, MyPage }
 
 class AppController extends GetxService {
   static AppController get to => Get.find();

@@ -1,19 +1,18 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image/image.dart' as ImD;
 import 'package:uuid/uuid.dart';
 import 'package:googlelogin_firebase/models/user.dart';
 
 class TestPage extends StatefulWidget {
-  final gCurrentUser;
+  final User gCurrentUser;
   TestPage(this.gCurrentUser);
   @override
   _TestPageState createState() => _TestPageState();
@@ -168,10 +167,9 @@ class _TestPageState extends State<TestPage>
   savePostInfoToFirestore({String url, String location, String desc}) {
     DateTime _date = DateTime.now();
 
-    final user = FirebaseAuth.instance.currentUser;
     final postdoc = FirebaseFirestore.instance
         .collection('user')
-        .doc(user.uid)
+        .doc(widget.gCurrentUser.id)
         .collection('post')
         .doc();
     postdoc
@@ -190,12 +188,13 @@ class _TestPageState extends State<TestPage>
   }
 
   Future<String> uploadPhoto(mImgFile) async {
-    firebase_storage.FirebaseStorage fStorage =
-        firebase_storage.FirebaseStorage.instance;
-    final storageUploadTask = fStorage
-        .ref('post_$postId.jpg')
+    final StorageReference storageReference =
+        FirebaseStorage.instance.ref().child('Posts Pictures');
+    StorageUploadTask storageUploadTask = storageReference
+        .child('post_$postId.jpg')
         .putFile(mImgFile); // 파일명을 지정해서 Storage에 저장
-    final storageTaskSnapshot = await storageUploadTask; // 저장이 완료되면
+    StorageTaskSnapshot storageTaskSnapshot =
+        await storageUploadTask.onComplete; // 저장이 완료되면
     return await storageTaskSnapshot.ref.getDownloadURL(); // 저장된 url값을 return
   }
 
