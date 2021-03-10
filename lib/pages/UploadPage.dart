@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:googlelogin_firebase/models/user.dart';
+<<<<<<< HEAD
 import 'package:googlelogin_firebase/pages/HomePage.dart';
 import 'package:uuid/uuid.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,6 +16,30 @@ import 'package:googlelogin_firebase/widgets/ProgressWidget.dart';
 class UploadPage extends StatefulWidget {
   final User gCurrentUser;
   UploadPage(this.gCurrentUser);
+=======
+import 'package:googlelogin_firebase/pages/App.dart';
+import 'package:uuid/uuid.dart';
+import 'package:path_provider/path_provider.dart';
+<<<<<<< HEAD:sample/pages/TestPage.dart
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:geolocator/geolocator.dart';
+=======
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd:lib/pages/UploadPage.dart
+import 'package:image/image.dart' as ImD;
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:googlelogin_firebase/widgets/ProgressWidget.dart';
+
+<<<<<<< HEAD:sample/pages/TestPage.dart
+class TestPage extends StatefulWidget {
+  final User gCurrentUser;
+  TestPage(this.gCurrentUser);
+=======
+class UploadPage extends StatefulWidget {
+  final User gCurrentUser;
+  UploadPage(this.gCurrentUser);
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd:lib/pages/UploadPage.dart
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
   @override
   _UploadPageState createState() => _UploadPageState();
 }
@@ -92,6 +117,7 @@ class _UploadPageState extends State<UploadPage>
   }
 
   displayUploadScreen() {
+<<<<<<< HEAD
     return Container(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -114,6 +140,25 @@ class _UploadPageState extends State<UploadPage>
             ))
       ],
     ));
+=======
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('게시물'),
+        centerTitle: false,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => takeImage(context),
+          )
+        ],
+      ),
+      body: SafeArea(
+          child: Column(
+        children: <Widget>[],
+      )),
+    );
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
   }
 
   clearPostInfo() {
@@ -171,11 +216,31 @@ class _UploadPageState extends State<UploadPage>
     clearPostInfo();
   }
 
+<<<<<<< HEAD
   savePostInfoToFireStore({String url, String location, String desc}) {
     userReference
         .doc(widget.gCurrentUser.id)
         .collection('Posts')
         .doc(postId)
+=======
+<<<<<<< HEAD:sample/pages/TestPage.dart
+  savePostInfoToFirestore({String url, String location, String desc}) {
+    DateTime _date = DateTime.now();
+
+    final postdoc = FirebaseFirestore.instance
+        .collection('user')
+        .doc(widget.gCurrentUser.id)
+        .collection('post')
+        .doc();
+    postdoc
+=======
+  savePostInfoToFireStore({String url, String location, String desc}) {
+    usersReference
+        .doc(widget.gCurrentUser.id)
+        .collection('posts')
+        .doc(postId)
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd:lib/pages/UploadPage.dart
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
         .set({
       'postId': postId,
       'ownerId': widget.gCurrentUser.id,
@@ -189,11 +254,27 @@ class _UploadPageState extends State<UploadPage>
   }
 
   Future<String> uploadPhoto(mImgFile) async {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:sample/pages/TestPage.dart
+    final StorageReference storageReference =
+        FirebaseStorage.instance.ref().child('Posts Pictures');
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
     StorageUploadTask storageUploadTask = storageReference
         .child('post_$postId.jpg')
         .putFile(mImgFile); // 파일명을 지정해서 Storage에 저장
     StorageTaskSnapshot storageTaskSnapshot =
         await storageUploadTask.onComplete; // 저장이 완료되면
+<<<<<<< HEAD
+=======
+=======
+    firebase_storage.UploadTask storageUploadTask = storageReference
+        .child('post_$postId.jpg')
+        .putFile(mImgFile); // 파일명을 지정해서 Storage에 저장
+    firebase_storage.TaskSnapshot storageTaskSnapshot =
+        await storageUploadTask; // 저장이 완료되면
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd:lib/pages/UploadPage.dart
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
     return await storageTaskSnapshot.ref.getDownloadURL(); // 저장된 url값을 return
   }
 
@@ -247,13 +328,21 @@ class _UploadPageState extends State<UploadPage>
                     width: 250,
                     child: TextField(
                       style: TextStyle(
+<<<<<<< HEAD
                         color: Colors.white,
+=======
+                        color: Colors.black,
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
                       ),
                       controller: descTextEditingController,
                       decoration: InputDecoration(
                         hintText: 'Say something about image',
                         hintStyle: TextStyle(
+<<<<<<< HEAD
                           color: Colors.white,
+=======
+                          color: Colors.black,
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
                         ),
                         border: InputBorder.none,
                       ),
@@ -261,18 +350,30 @@ class _UploadPageState extends State<UploadPage>
             Divider(),
             ListTile(
                 leading: Icon(Icons.person_pin_circle,
+<<<<<<< HEAD
                     color: Colors.white, size: 36),
+=======
+                    color: Colors.black, size: 36),
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
                 title: Container(
                     width: 250,
                     child: TextField(
                       style: TextStyle(
+<<<<<<< HEAD
                         color: Colors.white,
+=======
+                        color: Colors.black,
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
                       ),
                       controller: locationTextEditingController,
                       decoration: InputDecoration(
                         hintText: 'Write the location here',
                         hintStyle: TextStyle(
+<<<<<<< HEAD
                           color: Colors.white,
+=======
+                          color: Colors.black,
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
                         ),
                         border: InputBorder.none,
                       ),
@@ -289,8 +390,12 @@ class _UploadPageState extends State<UploadPage>
                   icon: Icon(Icons.location_on, color: Colors.white),
                   label: Text('Get my Current Location',
                       style: TextStyle(color: Colors.white)),
+<<<<<<< HEAD
 
                   // onPressed: getUserCurrentLocation,
+=======
+                  onPressed: getUserCurrentLocation,
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
                 ))
           ],
         ));
@@ -301,6 +406,12 @@ class _UploadPageState extends State<UploadPage>
   @override
   Widget build(BuildContext context) {
     // 카메라 또는 갤러리에서 사진 선택한 후엔 UploadFormScreen으로 보여준다.
+<<<<<<< HEAD
     return imgFile == null ? displayUploadScreen() : displayUploadFormScreen();
+=======
+    return Scaffold(
+      body: imgFile == null ? displayUploadScreen() : displayUploadFormScreen(),
+    );
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
   }
 }

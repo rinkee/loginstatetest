@@ -2,7 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:googlelogin_firebase/models/user.dart';
+<<<<<<< HEAD
 import 'package:googlelogin_firebase/pages/HomePage.dart';
+=======
+import 'package:googlelogin_firebase/pages/App.dart';
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
 import 'package:googlelogin_firebase/widgets/ProgressWidget.dart';
 
 import 'ProfilePage.dart';
@@ -40,7 +44,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
 
     if (_bioValid && _profileNameValid) {
+<<<<<<< HEAD
       userReference.doc(widget.currentOnlineUserId).update({
+=======
+      usersReference.doc(widget.currentOnlineUserId).update({
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
         'profileName': profileNameTextEditingController.text,
         'bio': bioTextEditingController.text,
       });
@@ -67,7 +75,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
     // DB에서 사용자 정보 가져오기
     DocumentSnapshot documentSnapshot =
+<<<<<<< HEAD
         await userReference.doc(widget.currentOnlineUserId).get();
+=======
+        await usersReference.doc(widget.currentOnlineUserId).get();
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
     user = User.fromDocument(documentSnapshot);
 
     // profile, bio 입력란에 사용자 정보로 채워주기
@@ -157,7 +169,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
   logoutUser() async {
     await googleSignIn.signOut();
     Navigator.pushReplacement(
+<<<<<<< HEAD
         context, MaterialPageRoute(builder: (context) => HomePage()));
+=======
+        context, MaterialPageRoute(builder: (context) => App()));
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
   }
 
   createProfileNameTextFormField() {

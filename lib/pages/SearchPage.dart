@@ -1,7 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:googlelogin_firebase/pages/HomePage.dart';
+=======
+import 'package:googlelogin_firebase/pages/App.dart';
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
 import 'package:googlelogin_firebase/widgets/ProgressWidget.dart';
 import 'package:googlelogin_firebase/models/user.dart';
 
@@ -27,7 +31,11 @@ class _SearchPageState extends State<SearchPage>
   controlSearching(str) {
     print(str);
     Future<QuerySnapshot> allUsers =
+<<<<<<< HEAD
         userReference.where('profileName', isGreaterThanOrEqualTo: str).get();
+=======
+        usersReference.where('profileName', isGreaterThanOrEqualTo: str).get();
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
     setState(() {
       futureSearchResults = allUsers;
     });

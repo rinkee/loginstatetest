@@ -5,7 +5,11 @@ import 'package:googlelogin_firebase/widgets/HeaderWidget.dart';
 import 'package:googlelogin_firebase/widgets/ProgressWidget.dart';
 
 import 'EditProfilePage.dart';
+<<<<<<< HEAD
 import 'HomePage.dart';
+=======
+import 'App.dart';
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
 
 class ProfilePage extends StatefulWidget {
   final String userProfileId;
@@ -22,7 +26,11 @@ class _ProfilePageState extends State<ProfilePage> {
   createProfileTopView() {
     return FutureBuilder(
         // 현재 로그인한 유저의 정보로 DB 데이터 가져오기
+<<<<<<< HEAD
         future: userReference.doc(widget.userProfileId).get(),
+=======
+        future: usersReference.doc(widget.userProfileId).get(),
+>>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
         builder: (context, dataSnapshot) {
           // 가져오는 동안 Progress bar
           if (!dataSnapshot.hasData) {

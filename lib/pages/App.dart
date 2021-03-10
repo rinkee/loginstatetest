@@ -1,60 +1,49 @@
-<<<<<<< HEAD
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:googlelogin_firebase/App.dart';
-import 'package:googlelogin_firebase/binding/init_binding.dart';
 import 'package:googlelogin_firebase/models/user.dart';
+import 'package:googlelogin_firebase/pages/TimeLinePage.dart';
+import 'package:googlelogin_firebase/pages/SearchPage.dart';
+import 'package:googlelogin_firebase/pages/ProfilePage.dart';
+import 'package:googlelogin_firebase/pages/UploadPage.dart';
+import 'package:googlelogin_firebase/pages/NotificationsPage.dart';
 import 'package:googlelogin_firebase/pages/CreateAccountPage.dart';
-import 'package:googlelogin_firebase/pages/HomePage.dart';
-import 'package:googlelogin_firebase/pages/LoginPage.dart';
-import 'dart:async';
-=======
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:googlelogin_firebase/pages/App.dart';
-import 'package:googlelogin_firebase/provider/SigninProvider.dart';
-import 'package:provider/provider.dart';
->>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-<<<<<<< HEAD
-  runApp(MyApp());
-}
-
-bool isSignedIn = false;
 // variable for google sign in (very easy to use)
 final GoogleSignIn googleSignIn = new GoogleSignIn();
 // variable for firestore collection 'users'
-final userReference =
+final usersReference =
     FirebaseFirestore.instance.collection('users'); // 사용자 정보 저장을 위한 ref
-final StorageReference storageReference =
-    FirebaseStorage.instance.ref().child('Posts Pictures');
+final firebase_storage.Reference storageReference =
+    firebase_storage.FirebaseStorage.instance.ref().child('Posts Pictures');
 final postsReference =
-    FirebaseFirestore.instance.collection('posts'); // 게시글 정보 저장을 위한 ref
+    FirebaseFirestore.instance.collection('users'); // 게시글 정보 저장을 위한 ref
 
 final DateTime timestamp = DateTime.now();
 User currentUser;
 
-class MyApp extends StatefulWidget {
-  // This widget is the root of your application.
-
+class App extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
-=======
-
-  runApp(MyApp());
->>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
+  _AppState createState() => _AppState();
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class _AppState extends State<App> {
+  bool isSignedIn = false;
+  // 페이지 컨트롤
+  PageController pageController;
+  int currentPage = 0;
+
+  List<Widget> pageList = [
+    TimeLinePage(), // 0번 pageIndex
+    SearchPage(), // 1번 pageIndex
+    UploadPage(currentUser), // 2번 pageIndex
+    NotificationsPage(), // 3번 pageIndex
+    ProfilePage(currentUser.id),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -62,6 +51,7 @@ class MyApp extends StatelessWidget {
       print("completed");
       setState(() {});
     });
+    pageController = PageController();
 
     // 앱 실행시 구글 사용자의 변경여부를 확인함
     googleSignIn.onCurrentUserChanged.listen((gSignInAccount) {
@@ -78,6 +68,7 @@ class MyApp extends StatelessWidget {
     // });
   }
 
+  // 로그인 상태 여부에 따라 isSignedIn flag값을 변경해줌
   controlSignIn(GoogleSignInAccount signInAccount) async {
     if (signInAccount != null) {
       await saveUserInfoToFirestore();
@@ -96,7 +87,7 @@ class MyApp extends StatelessWidget {
     final GoogleSignInAccount gCurrentUser = googleSignIn.currentUser;
     // 해당 유저의 db정보 가져오기
     DocumentSnapshot documentSnapshot =
-        await userReference.doc(gCurrentUser.id).get();
+        await usersReference.doc(gCurrentUser.id).get();
 
     // 해당 유저의 db정보가 없다면
     if (!documentSnapshot.exists) {
@@ -105,7 +96,7 @@ class MyApp extends StatelessWidget {
           MaterialPageRoute(builder: (context) => CreateAccountPage()));
 
       // 유저정보 셋팅된 값으로 db에 set
-      userReference.doc(gCurrentUser.id).set({
+      usersReference.doc(gCurrentUser.id).set({
         'id': gCurrentUser.id,
         'profileName': gCurrentUser.displayName,
         'username': username,
@@ -116,60 +107,53 @@ class MyApp extends StatelessWidget {
       });
 
       // 해당 정보 다시 가져오기
-      documentSnapshot = await userReference.doc(gCurrentUser.id).get();
+      documentSnapshot = await usersReference.doc(gCurrentUser.id).get();
     }
 
     // 현재 유저정보에 값 셋팅하기
     currentUser = User.fromDocument(documentSnapshot);
   }
 
-  @override
-  Widget build(BuildContext context) {
-<<<<<<< HEAD
-    return GetMaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      initialBinding: InitBinding(),
-      initialRoute: "/",
-      getPages: [GetPage(name: "/", page: () => App())],
-    );
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
   }
-}
 
-pages() {
-  if (isSignedIn) {
-    print('app');
-    return App();
-  } else {
-    print('login');
-    return LoginPage();
-=======
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-        dialogBackgroundColor: Colors.white,
-        primaryColor: Colors.white,
-        cardColor: Colors.black,
-        accentColor: Colors.white,
-      ),
-      home: StreamBuilder(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          final provider = Provider.of<SigninProvider>(context);
-          if (provider.isSigningIn) {
-            return buildSignInScreen();
-          } else if (!snapshot.hasData) {
-            return
-          }
-          return App();
-        }
+  loginUser() {
+    googleSignIn.signIn();
+  }
+
+  buildHomeScreen() {
+    return Scaffold(
+      body: pageList[currentPage],
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: currentPage,
+        selectedFontSize: 0,
+        unselectedFontSize: 0,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
+        onTap: (int index) {
+          setState(() {
+            currentPage = index;
+          });
+        },
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home, size: 30.0), label: ''),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.explore_outlined, size: 30.0), label: ''),
+          BottomNavigationBarItem(icon: Icon(Icons.add, size: 50.0), label: ''),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.favorite_border, size: 30.0), label: ''),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person, size: 30.0), label: ''),
+        ],
       ),
     );
   }
+
   buildSignInScreen() {
-    final provider = Provider.of<SigninProvider>(context);
     return Scaffold(
         body: Container(
             alignment: Alignment.center,
@@ -183,8 +167,7 @@ pages() {
                 ),
                 SizedBox(height: 200),
                 GestureDetector(
-
-                  onTap: provider.loginUser,
+                  onTap: loginUser,
                   child: Container(
                     width: 200,
                     height: 50,
@@ -196,7 +179,14 @@ pages() {
                 )
               ],
             )));
->>>>>>> 6ada9876745a1713c4ea75144d6842d45eb5e7cd
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (isSignedIn) {
+      return buildHomeScreen();
+    } else {
+      return buildSignInScreen();
+    }
   }
 }
-
